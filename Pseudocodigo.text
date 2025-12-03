@@ -1,0 +1,49 @@
+ALGORITMO TriangulacionMinima
+
+    ENTRADA: Lista P de n puntos (vértices del polígono)
+    SALIDA: Costo mínimo de la triangulación
+
+    // Paso 1: Inicializar tabla DP con ceros
+    Crear matriz DP[n][n]
+    PARA i ← 0 HASTA n-1 HACER
+        PARA j ← 0 HASTA n-1 HACER
+            DP[i][j] ← 0
+        FIN PARA
+    FIN PARA
+
+    // Paso 2: Llenar DP para subpolígonos de diferente longitud
+    PARA longitud ← 2 HASTA n-1 HACER
+        PARA i ← 0 HASTA n - longitud - 1 HACER
+            j ← i + longitud
+            DP[i][j] ← INFINITO
+
+            // Evaluar todas las posibles divisiones k
+            PARA k ← i + 1 HASTA j - 1 HACER
+                costoTri ← CostoTriangulo(P[i], P[k], P[j])
+                costoTotal ← DP[i][k] + DP[k][j] + costoTri
+
+                SI costoTotal < DP[i][j] ENTONCES
+                    DP[i][j] ← costoTotal
+                FIN SI
+            FIN PARA
+
+        FIN PARA
+    FIN PARA
+
+    RETORNAR DP[0][n-1]
+FIN ALGORITMO
+
+
+FUNCION CostoTriangulo(A, B, C)
+    d1 ← Distancia(A, B)
+    d2 ← Distancia(B, C)
+    d3 ← Distancia(C, A)
+    RETORNAR d1 + d2 + d3
+FIN FUNCION
+
+
+FUNCION Distancia(P1, P2)
+    dx ← P1.x - P2.x
+    dy ← P1.y - P2.y
+    RETORNAR raíz_cuadrada(dx^2 + dy^2)
+FIN FUNCION
